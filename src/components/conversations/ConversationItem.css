@@ -1,0 +1,125 @@
+.conversation-item {
+  display: flex;
+  align-items: center;
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
+}
+
+.conversation-item:hover {
+  background: var(--color-surface-hover);
+}
+
+.conversation-item--active {
+  background: var(--color-primary-muted);
+}
+
+.conversation-item__select {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.conversation-item--active .conversation-item__select {
+  color: var(--color-primary);
+}
+
+.conversation-item__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.conversation-item__title mark {
+  background: var(--color-warning-muted);
+  color: inherit;
+  border-radius: 2px;
+}
+
+.conversation-item__actions {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 2px;
+  padding-right: var(--space-2);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.conversation-item:hover .conversation-item__actions,
+.conversation-item__actions:focus-within {
+  opacity: 1;
+}
+
+.conversation-item__icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-subtle);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.conversation-item__icon-button:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.conversation-item--editing {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+}
+
+.conversation-item__rename-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 28px;
+  padding: 0 var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  background: var(--color-background);
+  border: var(--border-width) solid var(--color-primary);
+  border-radius: var(--radius-sm);
+}
+
+.conversation-item--editing button {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  font-size: var(--font-size-xs);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--color-text-muted);
+}
+
+.conversation-item--editing button:hover {
+  background: var(--color-surface-hover);
+}
+
+.conversation-item__confirm-label {
+  flex: 1 1 auto;
+  font-size: var(--font-size-xs);
+  color: var(--color-text);
+}
+
+.conversation-item--editing button.conversation-item__confirm-danger {
+  width: auto;
+  padding: 0 var(--space-2);
+  color: var(--color-text-on-primary);
+  background: var(--color-danger);
+}

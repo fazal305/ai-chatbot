@@ -1,0 +1,9 @@
+.message-list {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.message-list__bottom-spacer {
+  height: var(--space-6);
+}

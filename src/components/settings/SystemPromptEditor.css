@@ -1,0 +1,51 @@
+.system-prompt-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.system-prompt-editor__label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.system-prompt-editor__description {
+  margin-top: -4px;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-subtle);
+}
+
+.system-prompt-editor__textarea {
+  width: 100%;
+  padding: var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  background: var(--color-background);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  resize: vertical;
+}
+
+.system-prompt-editor__save {
+  align-self: flex-end;
+  height: 32px;
+  padding: 0 var(--space-4);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-text-on-primary);
+  background: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.system-prompt-editor__save:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.system-prompt-editor__save:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
