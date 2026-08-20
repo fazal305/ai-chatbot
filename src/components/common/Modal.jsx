@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { CloseIcon } from "./icons.jsx";
 import "./Modal.css";
 
 /** Accessible modal: Escape to close, backdrop click to close, focus on open. */
@@ -30,7 +31,7 @@ function Modal({ open, onClose, title, children }) {
         <div className="modal__header">
           <h2 className="modal__title">{title}</h2>
           <button type="button" className="modal__close" onClick={onClose} aria-label="Close dialog">
-            ✕
+            <CloseIcon />
           </button>
         </div>
         <div className="modal__body">{children}</div>

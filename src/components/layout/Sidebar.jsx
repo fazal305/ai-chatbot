@@ -3,6 +3,7 @@ import { useConversations } from "../../hooks/useConversations.js";
 import { useDebounce } from "../../hooks/useDebounce.js";
 import ConversationList from "../conversations/ConversationList.jsx";
 import ConversationSearch from "../conversations/ConversationSearch.jsx";
+import { PlusIcon } from "../common/icons.jsx";
 import "./Sidebar.css";
 
 function matchesQuery(conversation, query) {
@@ -47,7 +48,7 @@ function Sidebar({ isOpen, onNavigate }) {
             onNavigate?.();
           }}
         >
-          <span aria-hidden="true">+</span> New Chat
+          <PlusIcon width={16} height={16} /> New Chat
         </button>
 
         <ConversationSearch value={query} onChange={setQuery} />

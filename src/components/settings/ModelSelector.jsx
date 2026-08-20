@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useChat } from "../../hooks/useChat.js";
 import { useConversations } from "../../hooks/useConversations.js";
 import { models, defaultModelId, getModelById } from "../../config/models.js";
+import { ChevronDownIcon } from "../common/icons.jsx";
 import "./ModelSelector.css";
 
 /**
@@ -38,7 +39,7 @@ function ModelSelector() {
         aria-expanded={isOpen}
       >
         {currentModel?.name ?? "Select model"}
-        <span aria-hidden="true">▾</span>
+        <ChevronDownIcon width={14} height={14} />
       </button>
 
       {isOpen && activeConversation && (

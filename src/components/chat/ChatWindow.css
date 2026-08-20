@@ -31,6 +31,9 @@
 }
 
 .chat-window__welcome-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
   margin-top: var(--space-2);
   height: 38px;
   padding: 0 var(--space-5);
@@ -72,9 +75,19 @@
 
 .chat-window__error button {
   flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
   background: transparent;
   border: none;
+  border-radius: var(--radius-sm);
   color: inherit;
   cursor: pointer;
-  font-size: var(--font-size-sm);
+}
+
+.chat-window__error button:hover {
+  background: var(--color-danger);
+  color: var(--color-text-on-primary);
 }

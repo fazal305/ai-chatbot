@@ -57,13 +57,20 @@
   opacity: 1;
 }
 
+/* Touch devices have no hover state, so opacity:0-on-hover would make
+   these actions undiscoverable and unreachable — always show them. */
+@media (hover: none) {
+  .conversation-item__actions {
+    opacity: 1;
+  }
+}
+
 .conversation-item__icon-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  font-size: var(--font-size-xs);
+  width: 32px;
+  height: 32px;
   color: var(--color-text-subtle);
   background: transparent;
   border: none;
@@ -97,8 +104,11 @@
 
 .conversation-item--editing button {
   flex: 0 0 auto;
-  width: 24px;
-  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
   font-size: var(--font-size-xs);
   background: transparent;
   border: none;
@@ -122,4 +132,9 @@
   padding: 0 var(--space-2);
   color: var(--color-text-on-primary);
   background: var(--color-danger);
+}
+
+.conversation-item--editing button.conversation-item__confirm-cancel {
+  width: auto;
+  padding: 0 var(--space-2);
 }

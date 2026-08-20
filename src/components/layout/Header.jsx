@@ -1,5 +1,6 @@
 import appConfig from "../../config/app.js";
 import ModelSelector from "../settings/ModelSelector.jsx";
+import { MenuIcon, SettingsIcon } from "../common/icons.jsx";
 import "./Header.css";
 
 function Header({ onOpenSettings, onToggleSidebar }) {
@@ -12,7 +13,7 @@ function Header({ onOpenSettings, onToggleSidebar }) {
           onClick={onToggleSidebar}
           aria-label="Toggle conversations sidebar"
         >
-          ☰
+          <MenuIcon />
         </button>
         <span className="app-header__name">{appConfig.name}</span>
       </div>
@@ -26,7 +27,7 @@ function Header({ onOpenSettings, onToggleSidebar }) {
           onClick={onOpenSettings}
           aria-label="Open settings"
         >
-          ⚙
+          <SettingsIcon />
         </button>
       </div>
     </header>

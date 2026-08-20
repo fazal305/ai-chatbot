@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { splitHighlight } from "../../utils/formatting.js";
+import { CheckIcon, CloseIcon, EditIcon, TrashIcon } from "../common/icons.jsx";
 import "./ConversationItem.css";
 
 function ConversationItem({ conversation, isActive, query, onSelect, onRename, onDelete }) {
@@ -32,10 +33,10 @@ function ConversationItem({ conversation, isActive, query, onSelect, onRename, o
           onFocus={(e) => e.target.select()}
         />
         <button type="button" onClick={saveRename} aria-label="Save name">
-          ✓
+          <CheckIcon width={16} height={16} />
         </button>
         <button type="button" onClick={() => setIsRenaming(false)} aria-label="Cancel rename">
-          ✕
+          <CloseIcon width={16} height={16} />
         </button>
       </li>
     );
@@ -52,7 +53,11 @@ function ConversationItem({ conversation, isActive, query, onSelect, onRename, o
         >
           Delete
         </button>
-        <button type="button" onClick={() => setIsConfirmingDelete(false)}>
+        <button
+          type="button"
+          className="conversation-item__confirm-cancel"
+          onClick={() => setIsConfirmingDelete(false)}
+        >
           Cancel
         </button>
       </li>
@@ -75,7 +80,7 @@ function ConversationItem({ conversation, isActive, query, onSelect, onRename, o
       </button>
       <span className="conversation-item__actions">
         <button type="button" className="conversation-item__icon-button" onClick={startRename} aria-label="Rename conversation">
-          ✎
+          <EditIcon width={16} height={16} />
         </button>
         <button
           type="button"
@@ -83,7 +88,7 @@ function ConversationItem({ conversation, isActive, query, onSelect, onRename, o
           onClick={() => setIsConfirmingDelete(true)}
           aria-label="Delete conversation"
         >
-          🗑
+          <TrashIcon width={16} height={16} />
         </button>
       </span>
     </li>

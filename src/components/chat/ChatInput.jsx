@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { SendIcon } from "../common/icons.jsx";
 import "./ChatInput.css";
 
 /**
@@ -63,7 +64,7 @@ function ChatInput({ onSend, onStop, isGenerating, disabled }) {
             disabled={disabled || !value.trim()}
             aria-label="Send message"
           >
-            ➤
+            <SendIcon />
           </button>
         )}
       </div>

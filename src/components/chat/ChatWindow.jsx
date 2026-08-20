@@ -3,6 +3,7 @@ import { useConversations } from "../../hooks/useConversations.js";
 import { useStreamingResponse } from "../../hooks/useStreamingResponse.js";
 import MessageList from "./MessageList.jsx";
 import ChatInput from "./ChatInput.jsx";
+import { CloseIcon, PlusIcon } from "../common/icons.jsx";
 import "./ChatWindow.css";
 
 function ChatWindow() {
@@ -19,7 +20,7 @@ function ChatWindow() {
             Create a new chat to begin talking with the AI.
           </p>
           <button type="button" className="chat-window__welcome-button" onClick={() => createConversation()}>
-            + New Chat
+            <PlusIcon width={16} height={16} /> New Chat
           </button>
         </div>
       </div>
@@ -32,7 +33,7 @@ function ChatWindow() {
         <div className="chat-window__error" role="alert">
           <span>{error}</span>
           <button type="button" onClick={clearError} aria-label="Dismiss error">
-            ✕
+            <CloseIcon />
           </button>
         </div>
       )}
