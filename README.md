@@ -2,6 +2,10 @@
 
 A production-quality AI chat workspace built with React, Vite, and the [OpenRouter](https://openrouter.ai) API. This is not a ChatGPT clone tutorial — it's a demonstration of real frontend architecture: streaming responses, a reducer-driven state layer, a service abstraction over the API, local persistence with an IndexedDB-ready storage layer, and the kind of polish (keyboard shortcuts, command palette, accessible modals, responsive drawer navigation) expected of a shipped product.
 
+## Live Demo
+
+**[ai-chatbot-fz17.vercel.app](https://ai-chatbot-fz17.vercel.app)** — you'll need your own OpenRouter API key to actually chat (see below).
+
 > **You need your own OpenRouter API key to run this.** The project intentionally does not ship with one — see [Environment Variables](#environment-variables) below. Client-side API keys also mean this key is visible to anyone who opens devtools, so treat it as a low-stakes/demo key, not a production secret (see [Security Considerations](#security-considerations)).
 
 ---
