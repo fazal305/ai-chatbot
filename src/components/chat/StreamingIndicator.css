@@ -1,8 +1,19 @@
+.streaming-indicator-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .streaming-indicator {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   height: 20px;
+}
+
+.streaming-indicator__slow-note {
+  font-size: 0.85em;
+  color: var(--color-text-subtle);
 }
 
 .streaming-indicator__dot {
