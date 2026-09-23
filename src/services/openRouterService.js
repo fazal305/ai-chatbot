@@ -1,7 +1,5 @@
 import appConfig from "../config/app.js";
 
-const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
-
 /**
  * Normalized error shape for anything that can go wrong talking to
  * OpenRouter. `type` lets the UI decide how to react (e.g. show a
@@ -19,17 +17,16 @@ export class OpenRouterError extends Error {
   }
 }
 
+// The API key now lives server-side only (see api/chat.js), so there's
+// nothing to check client-side. Kept as a stable `true` so nothing that
+// still imports it needs to change.
 export function hasApiKey() {
-  return Boolean(API_KEY && API_KEY.trim().length > 0);
+  return true;
 }
 
 function buildHeaders() {
   return {
-    Authorization: `Bearer ${API_KEY}`,
     "Content-Type": "application/json",
-    // OpenRouter-recommended attribution headers (optional).
-    "HTTP-Referer": appConfig.api.referer,
-    "X-Title": appConfig.api.title,
   };
 }
 
@@ -87,13 +84,6 @@ export async function streamChatCompletion({
   signal,
   onDelta,
 }) {
-  if (!hasApiKey()) {
-    throw new OpenRouterError(
-      "No OpenRouter API key is configured. Add VITE_OPENROUTER_API_KEY to your .env file and restart the dev server.",
-      { type: "config" },
-    );
-  }
-
   let response;
   try {
     response = await fetch(`${appConfig.api.baseUrl}${appConfig.api.chatCompletionsPath}`, {

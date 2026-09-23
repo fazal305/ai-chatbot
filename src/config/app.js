@@ -10,12 +10,10 @@ export const appConfig = {
   description: "A production-quality AI chat workspace powered by OpenRouter.",
 
   api: {
-    baseUrl: "https://openrouter.ai/api/v1",
-    chatCompletionsPath: "/chat/completions",
-    // OpenRouter-recommended attribution headers (optional but good practice).
-    // Set these to your actual deployed URL/name if you deploy publicly.
-    referer: typeof window !== "undefined" ? window.location.origin : "",
-    title: "Ai Chat Bot",
+    // Requests go to our own server-side proxy (api/chat.js), which
+    // attaches the OpenRouter key server-side — the browser never sees it.
+    baseUrl: "/api",
+    chatCompletionsPath: "/chat",
   },
 
   defaults: {

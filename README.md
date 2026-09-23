@@ -4,9 +4,9 @@ A production-quality AI chat workspace built with React, Vite, and the [OpenRout
 
 ## Live Demo
 
-**[ai-chatbot-fz17.vercel.app](https://ai-chatbot-fz17.vercel.app)** — you'll need your own OpenRouter API key to actually chat (see below).
+**[ai-chatbot-fz17.vercel.app](https://ai-chatbot-fz17.vercel.app)** — chat requests are proxied through a server-side Vercel function (`api/chat.js`), so the OpenRouter key stays private and is never exposed to the browser.
 
-> **You need your own OpenRouter API key to run this.** The project intentionally does not ship with one — see [Environment Variables](#environment-variables) below. Client-side API keys also mean this key is visible to anyone who opens devtools, so treat it as a low-stakes/demo key, not a production secret (see [Security Considerations](#security-considerations)).
+> **Running this yourself needs an OpenRouter API key.** The project intentionally does not ship with one — see [Environment Variables](#environment-variables) below. The key is read server-side only (`OPENROUTER_API_KEY`, no `VITE_` prefix) by a Vercel serverless function, so it is never bundled into client-side JavaScript or visible in devtools (see [Security Considerations](#security-considerations)).
 
 ---
 
@@ -23,7 +23,7 @@ A production-quality AI chat workspace built with React, Vite, and the [OpenRout
 - [Local Development](#local-development)
 - [Environment Variables](#environment-variables)
 - [Security Considerations](#security-considerations)
-- [API Key Limitations & Production Architecture](#api-key-limitations--production-architecture)
+- [API Key Architecture](#api-key-architecture)
 - [Local Persistence & IndexedDB Migration Path](#local-persistence--indexeddb-migration-path)
 - [Testing Checklist](#testing-checklist)
 - [Future Improvements](#future-improvements)
@@ -103,7 +103,7 @@ flowchart LR
 
 All requests go through `src/services/openRouterService.js`, which:
 
-- Reads the API key from `import.meta.env.VITE_OPENROUTER_API_KEY` and fails with a clear, human-readable error if it's missing — never a crash
+- Calls `/api/chat`, a Vercel serverless function that attaches the OpenRouter key server-side; a missing/misconfigured key surfaces as a normal, human-readable error — never a crash
 - Builds an OpenAI-compatible `POST /chat/completions` request with `stream: true`
 - Parses the raw SSE response manually (`ReadableStream` + `TextDecoder`), buffering across chunk boundaries since network chunks don't align to line boundaries
 - Normalizes every failure mode (missing key, 401/403, 429, 404, 5xx, network failure, malformed JSON chunk, empty response, cancellation) into one typed `OpenRouterError` with a `type` field the UI can branch on, and a message that's always safe to show a user
@@ -173,10 +173,14 @@ npm run dev
 
 ```bash
 # .env
-VITE_OPENROUTER_API_KEY=
+OPENROUTER_API_KEY=
 ```
 
-Get a key at [openrouter.ai/keys](https://openrouter.ai/keys). The app checks for this at request time and shows a clear, actionable error ("Add `VITE_OPENROUTER_API_KEY` to your `.env` file and restart the dev server") instead of crashing if it's missing.
+Get a key at [openrouter.ai/keys](https://openrouter.ai/keys). This is a **server-side-only** variable — it has no `VITE_` prefix, so it's read only by the `api/chat.js` serverless function (`process.env.OPENROUTER_API_KEY`) and is never bundled into the client-side JavaScript.
+
+**Local dev:** plain `vite dev` does not run serverless functions, so `/api/chat` won't resolve. Use [`vercel dev`](https://vercel.com/docs/cli/dev) instead (after `vercel link`), which runs the Vite dev server and the `api/` functions together.
+
+**Deployed (Vercel):** set `OPENROUTER_API_KEY` under Project Settings → Environment Variables in the Vercel dashboard, not as a build-time variable — the function reads it at request time, so no rebuild is needed after rotating it.
 
 **Why you need your own key:** this project's key is a personal, limited-token key kept private — it is never committed to the repo and cannot be shared publicly (anyone with it could exhaust its balance). Every user who runs this project locally supplies their own key in their own untracked `.env` file.
 
@@ -192,22 +196,20 @@ Raise either if you have a larger budget.
 - **Link URIs are sanitized.** `react-markdown` (v9+) does not filter dangerous URL schemes on its own — a response containing `[click me](javascript:alert(1))` would otherwise render a clickable, executable link. `src/utils/markdown.js`'s `sanitizeUrl()` allowlists `http(s):`, `mailto:`, `tel:`, and relative/hash paths; anything else is stripped.
 - **Imported JSON is never trusted.** `exportService.parseImportedConversations` structurally validates every conversation and message before use, and regenerates every ID so an imported file can never collide with (or silently overwrite) existing local data.
 - **`localStorage` reads are defensive.** Every read is wrapped in try/catch; corrupted or unexpected data degrades to an empty state instead of crashing the app.
-- **The API key never leaves `openRouterService.js`.** It's read once from `import.meta.env`, used only in the `Authorization` header, never logged, and never persisted anywhere (not in `localStorage`, not in conversation data, not in a URL).
+- **The API key never reaches the browser.** `api/chat.js`, a Vercel serverless function, reads it once from `process.env.OPENROUTER_API_KEY` (a server-side-only variable — no `VITE_` prefix, so it is never inlined into the client bundle), attaches it to the `Authorization` header on the server, and streams the response back. It's never logged, and never persisted anywhere (not in `localStorage`, not in conversation data, not in a URL).
 
-## API Key Limitations & Production Architecture
+## API Key Architecture
 
-`VITE_`-prefixed environment variables are inlined into the JavaScript bundle at build time — **anyone who opens browser devtools on a deployed build can read the key.** This is fine for local development and low-stakes demos, and is exactly why the app fails gracefully rather than assuming a key is always safely present. It is **not** safe for a public production deployment.
-
-The correct production architecture moves the key server-side:
+The frontend never talks to `openrouter.ai` directly. It calls our own `/api/chat` endpoint, which is a Vercel serverless function that attaches the real key server-side and forwards the request/stream:
 
 ```mermaid
 flowchart LR
-    Browser["React frontend<br/>(no API key)"] --> Proxy["Backend/API proxy<br/>(holds the real key)"]
+    Browser["React frontend<br/>(no API key)"] --> Proxy["api/chat.js<br/>(Vercel function, holds the real key)"]
     Proxy --> OpenRouter[("OpenRouter")]
     OpenRouter --> Model[("Selected AI model")]
 ```
 
-The frontend would call your own backend (a small serverless function or Node server), which attaches the real key server-side and forwards the request/stream. `openRouterService.js` is already isolated behind a single module boundary specifically so this swap — pointing `baseUrl` at your proxy instead of `openrouter.ai` directly — requires no changes anywhere else in the app.
+`openRouterService.js` is isolated behind a single module boundary — it just points `baseUrl` at `/api` instead of `openrouter.ai` — so nothing else in the app needed to change (streaming, error normalization, and model selection are all preserved exactly).
 
 ## Local Persistence & IndexedDB Migration Path
 
@@ -243,7 +245,6 @@ Verified manually against the running app (see commit history / build steps for 
 - Temperature / max-token controls exposed in the UI (currently config-only)
 - Prompt templates / favorite prompts
 - Message virtualization if conversation lengths grow large enough to matter
-- A real backend proxy for a public deployment (see [above](#api-key-limitations--production-architecture))
 
 ## Lessons Learned
 
